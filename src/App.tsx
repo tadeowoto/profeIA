@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type Message = {
   content: string;
@@ -16,6 +17,18 @@ type Asignature = {
     | "Astronomía";
 };
 
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
+
+export async function sendPromptToGemini(prompt: string): Promise<string> {
+  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  const text = response.text();
+  return text;
+}
+
 function App() {
   /* Este estado es para los mensajes del chat */
   const [message, setMessage] = useState<Message[]>([]);
@@ -25,7 +38,7 @@ function App() {
   const [selectedAsignature, setSelectedAsignature] =
     useState<Asignature | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const question = formData.get("question");
@@ -38,6 +51,15 @@ function App() {
       },
     ]);
     setIsLoading(true);
+    /* TODO deberia cambiar el prompt para que sea mas especifico dependiendo la asignatura */
+    const response = await sendPromptToGemini(question as string);
+    setMessage([
+      {
+        content: response,
+        role: "assistant",
+      },
+    ]);
+    setIsLoading(false);
   };
 
   return (
