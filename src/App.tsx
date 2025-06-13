@@ -1,26 +1,6 @@
 import { useState } from "react";
 import { sendPromptToGemini } from "./services/sendPrompt.ts";
-
-type Message = {
-  content: string;
-  role: "user" | "assistant";
-};
-type Chat = {
-  messages: Message[];
-  asignature: Asignature | null;
-};
-type Asignature = {
-  name:
-    | "Matemáticas"
-    | "Ciencias"
-    | "Lengua"
-    | "Historia"
-    | "Geografía"
-    | "Ciencias Sociales"
-    | "Computación"
-    | "Astronomía";
-};
-
+import type { Chat, Asignature } from "./types/chatTypes.ts";
 function App() {
   /* Este estado es para los mensajes del chat */
   const [message, setMessage] = useState<Chat>({
