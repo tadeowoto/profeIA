@@ -1,7 +1,16 @@
 import { ChatForm } from "./components/ChatForm.tsx";
 import { AssignaturesList } from "./components/AssignaturesList.tsx";
+import { useContext } from "react";
+import { ChatContext } from "./context/ChatContext.tsx";
 
 function App() {
+  const context = useContext(ChatContext);
+  if (!context) {
+    return null;
+  }
+
+  const { message, isLoading } = context;
+
   return (
     <div className="flex flex-col h-screen">
       <div className="flex flex-col h-full">

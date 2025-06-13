@@ -1,4 +1,14 @@
+import { useContext } from "react";
+import { ChatContext } from "../context/ChatContext.tsx";
+
 export const AssignaturesList = () => {
+  const context = useContext(ChatContext);
+  if (!context) {
+    return null;
+  }
+
+  const { setSelectedAsignature } = context;
+
   return (
     <article>
       <ul>
