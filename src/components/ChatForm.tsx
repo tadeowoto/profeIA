@@ -17,7 +17,10 @@ export const ChatForm = () => {
     if (!selectedAsignature || !question) return;
 
     setIsLoading(true);
-    const response = await sendPromptToGemini(question as string);
+    const response = await sendPromptToGemini(
+      question as string,
+      selectedAsignature.name
+    );
     if (response) {
       setMessage({
         messages: [
