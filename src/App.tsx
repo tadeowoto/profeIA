@@ -1,4 +1,6 @@
 import { ChatForm } from "./components/ChatForm.tsx";
+import { AssignaturesList } from "./components/AssignaturesList.tsx";
+
 function App() {
   return (
     <div className="flex flex-col h-screen">
@@ -6,42 +8,7 @@ function App() {
         {/* navbar */}
         <h1>ProfeIA</h1>
         <div className="grid grid-cols-3">
-          <article>
-            <ul>
-              <li
-                onClick={() => setSelectedAsignature({ name: "Matemáticas" })}
-              >
-                Matemáticas
-              </li>
-              <li onClick={() => setSelectedAsignature({ name: "Ciencias" })}>
-                Ciencias
-              </li>
-              <li onClick={() => setSelectedAsignature({ name: "Lengua" })}>
-                Lengua
-              </li>
-              <li onClick={() => setSelectedAsignature({ name: "Historia" })}>
-                Historia
-              </li>
-              <li onClick={() => setSelectedAsignature({ name: "Geografía" })}>
-                Geografía
-              </li>
-              <li
-                onClick={() =>
-                  setSelectedAsignature({ name: "Ciencias Sociales" })
-                }
-              >
-                Ciencias Sociales
-              </li>
-              <li
-                onClick={() => setSelectedAsignature({ name: "Computación" })}
-              >
-                Computación
-              </li>
-              <li onClick={() => setSelectedAsignature({ name: "Astronomía" })}>
-                Astronomía
-              </li>
-            </ul>
-          </article>
+          <AssignaturesList />
         </div>
 
         <ChatForm />
