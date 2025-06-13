@@ -1,18 +1,14 @@
-import { useState } from "react";
 import { sendPromptToGemini } from "../services/sendPrompt.ts";
-import type { Chat, Asignature } from "../types/chatTypes.ts";
+import { useContext } from "react";
+import { ChatContext } from "../context/ChatContext.tsx";
 
 export const ChatForm = () => {
-  /* Este estado es para los mensajes del chat */
-  const [message, setMessage] = useState<Chat>({
-    messages: [],
-    asignature: null,
-  });
-  /* Este estado es para saber si se está cargando */
-  const [isLoading, setIsLoading] = useState(false);
-  /* Este estado es para saber la asignatura seleccionada */
-  const [selectedAsignature, setSelectedAsignature] =
-    useState<Asignature | null>(null);
+  const context = useContext(ChatContext);
+  if (!context) {
+    return null;
+  }
+
+  const { message, setMessage, setIsLoading, selectedAsignature } = context;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
