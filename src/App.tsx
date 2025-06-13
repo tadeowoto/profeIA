@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { sendPromptToGemini } from "./services/sendPrompt.ts";
 
 type Message = {
   content: string;
   role: "user" | "assistant";
+};
+type Chat = {
+  messages: Message[];
+  asignature: Asignature | null;
 };
 type Asignature = {
   name:
@@ -17,21 +21,12 @@ type Asignature = {
     | "Astronomía";
 };
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
-
-export async function sendPromptToGemini(prompt: string): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  return text;
-}
-
 function App() {
   /* Este estado es para los mensajes del chat */
-  const [message, setMessage] = useState<Message[]>([]);
+  const [message, setMessage] = useState<Chat>({
+    messages: [],
+    asignature: null,
+  });
   /* Este estado es para saber si se está cargando */
   const [isLoading, setIsLoading] = useState(false);
   /* Este estado es para saber la asignatura seleccionada */
@@ -44,24 +39,23 @@ function App() {
     const question = formData.get("question");
     if (!selectedAsignature || !question) return;
 
-    setMessage([
-      {
-        content: question as string,
-        role: "user",
-      },
-    ]);
     setIsLoading(true);
-    /* TODO deberia cambiar el prompt para que sea mas especifico dependiendo la asignatura */
     const response = await sendPromptToGemini(question as string);
-    setMessage([
-      {
-        content: response,
-        role: "assistant",
-      },
-    ]);
+    if (response) {
+      setMessage({
+        messages: [
+          ...message.messages,
+          { content: question as string, role: "user" },
+          { content: response, role: "assistant" },
+        ],
+        asignature: selectedAsignature,
+      });
+    }
+
     setIsLoading(false);
   };
 
+  console.log(message);
   return (
     <div className="flex flex-col h-screen">
       <div className="flex flex-col h-full">
@@ -109,12 +103,12 @@ function App() {
           <textarea name="question" id="question" required></textarea>
           <button>Enviar</button>
         </form>
-        <div className="flex flex-col gap-4">
-          {message.map((message, index) => (
+        <div className="flex flex-col gap-10">
+          {message.messages.map((message, index) => (
             <div
               key={index}
-              className={`flex gap-2 ${
-                message.role === "user" ? "justify-end" : ""
+              className={`flex gap-4 ${
+                message.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
               <p className="p-2 rounded border">{message.content}</p>
